@@ -1,0 +1,155 @@
+# SlowWave supplemental list: DNS-bypass and VPN/proxy escape vectors
+#
+# CRITICAL FOR SLOWWAVE: A kid who can change device DNS to 1.1.1.1, install
+# ProtonVPN, or run Tor defeats the entire SlowWave filter. This list is the
+# "filter integrity" layer - it MUST be on for all minor tiers and SHOULD be
+# non-overridable from the SlowWave UI without re-PIN.
+#
+# This supplements HaGeZi's doh.vpn.proxy.bypass list (which is more
+# comprehensive). Use both, unioned.
+#
+# Strategy:
+#   1. Block DoH/DoT endpoint domains at DNS layer (this file)
+#   2. Block known DoH/DoT IPs at iptables layer (separate, see ip_blocklist)
+#   3. Force port 53 traffic through SlowWave's dnsmasq via iptables redirect
+#   4. Block all UDP/853 (DoT) and TCP/853 outbound
+#   5. Drop SNI matching known DoH hostnames at TLS-inspection layer (optional)
+#
+# Last reviewed: 2026-05
+
+# ============================================================================
+# Public DNS-over-HTTPS endpoints
+# ============================================================================
+# Cloudflare
+1.1.1.1
+one.one.one.one
+cloudflare-dns.com
+dns.cloudflare.com
+mozilla.cloudflare-dns.com
+chrome.cloudflare-dns.com
+family.cloudflare-dns.com
+security.cloudflare-dns.com
+
+# Google
+dns.google
+dns.google.com
+8.8.8.8
+8.8.4.4
+
+# Quad9
+dns.quad9.net
+dns9.quad9.net
+dns10.quad9.net
+dns11.quad9.net
+dns.quad9.net.
+
+# NextDNS (the main competitor)
+dns.nextdns.io
+nextdns.io
+my.nextdns.io
+controld.com
+dns.controld.com
+
+# AdGuard DNS
+dns.adguard.com
+dns.adguard-dns.com
+dns-family.adguard.com
+unfiltered.adguard-dns.com
+
+# OpenDNS / Cisco
+doh.opendns.com
+opendns.com
+208.67.222.222
+208.67.220.220
+
+# Other public resolvers
+dns.mullvad.net
+adblock.dns.mullvad.net
+family.dns.mullvad.net
+all.dns.mullvad.net
+doh.cleanbrowsing.org
+doh.libredns.gr
+doh.dns.sb
+dns.sb
+
+# ============================================================================
+# DNS-over-TLS specific endpoints (port 853)
+# ============================================================================
+# (Most of the above also support DoT; iptables block on tcp/udp 853 is
+# the more robust mitigation)
+
+# ============================================================================
+# Major commercial VPN providers
+# ============================================================================
+# Block both the website (so kid can't download client) AND the API endpoints
+# (so existing installed client can't auth). HaGeZi's list is more complete;
+# this is the high-traffic subset.
+protonvpn.com
+api.protonvpn.ch
+account.protonvpn.com
+nordvpn.com
+api.nordvpn.com
+expressvpn.com
+www.expressvpn.com
+surfshark.com
+api.surfshark.com
+mullvad.net
+api.mullvad.net
+tunnelbear.com
+www.tunnelbear.com
+windscribe.com
+hide.me
+www.hide.me
+pia.com
+privateinternetaccess.com
+www.privateinternetaccess.com
+ipvanish.com
+cyberghostvpn.com
+hotspotshield.com
+hola.org
+www.hola.org
+unblockit.dev
+1.1.1.1
+1.0.0.1
+# Apple Private Relay (iCloud Private Relay) - blocks SlowWave on iOS
+# Note: blocking this requires users to disable Private Relay in iOS settings
+mask.icloud.com
+mask-h2.icloud.com
+
+# ============================================================================
+# Tor entry / bridges / download
+# ============================================================================
+torproject.org
+www.torproject.org
+dist.torproject.org
+bridges.torproject.org
+gitlab.torproject.org
+metrics.torproject.org
+# Tor Browser update servers
+aus1.torproject.org
+
+# ============================================================================
+# Proxy / "unblock" services commonly recommended on student forums
+# ============================================================================
+hidemyass.com
+www.hidemyass.com
+proxysite.com
+www.proxysite.com
+kproxy.com
+www.kproxy.com
+croxyproxy.com
+www.croxyproxy.com
+hide.me
+4everproxy.com
+www.4everproxy.com
+youtubeunblocked.live
+proxify.com
+zalmos.com
+
+# ============================================================================
+# "Unblocked games" sites (also serve as proxy gateways)
+# ============================================================================
+unblockedgames.world
+unblockedgames66.com
+unblockedgames77.com
+# These tend to multiply; HaGeZi's list catches more, this is a starter.

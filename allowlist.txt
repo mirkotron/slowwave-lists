@@ -1,0 +1,76 @@
+# SlowWave allowlist
+#
+# Domains here are NEVER blocked, even if they appear in a blocked category.
+# Use this to whitelist:
+#   - Educational tools that aggregator lists sometimes catch
+#   - Apps explicitly exempted by the Australian regulator
+#   - Anything you've manually verified as safe-for-this-family
+#
+# Parents can additionally maintain /etc/slowwave/parent_allowlist.txt
+# (path configurable in policy.yaml) which is read and unioned with this.
+#
+# Format: bare domain per line. Subdomains of an allowlisted domain are
+# also allowed (e.g. allowing google.com allows mail.google.com).
+
+# ---------------------------------------------------------------------------
+# Education
+# ---------------------------------------------------------------------------
+khanacademy.org
+wikipedia.org
+wikimedia.org
+classroom.google.com
+duolingo.com
+codecademy.com
+scratch.mit.edu
+code.org
+brilliant.org
+quizlet.com
+ck12.org
+nasa.gov
+noaa.gov
+britannica.com
+
+# ---------------------------------------------------------------------------
+# Apps the Australian regulator EXEMPTED from the under-16 ban
+# (you may still choose to block these for younger tiers via policy)
+# ---------------------------------------------------------------------------
+discord.com
+discord.gg
+github.com
+classroom.google.com
+messenger.com
+m.me
+pinterest.com
+roblox.com
+steampowered.com
+steamcommunity.com
+whatsapp.com
+youtubekids.com
+www.youtubekids.com
+
+# ---------------------------------------------------------------------------
+# Apple ecosystem - blocking these breaks the device
+# ---------------------------------------------------------------------------
+apple.com
+icloud.com
+itunes.apple.com
+mzstatic.com
+# Note: mask.icloud.com is NOT here - that's Private Relay which defeats SlowWave
+
+# ---------------------------------------------------------------------------
+# Microsoft / Google infrastructure needed for school accounts
+# ---------------------------------------------------------------------------
+microsoft.com
+office.com
+office365.com
+microsoftonline.com
+live.com
+outlook.com
+google.com
+googleapis.com
+gstatic.com
+googleusercontent.com
+youtube.com
+# (Note: youtube.com is here as a domain placeholder. If you block YouTube
+# in a tier, this allowlist entry will override. Remove this line if you
+# want YouTube blocks to actually take effect.)

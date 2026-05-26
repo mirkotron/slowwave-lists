@@ -1,0 +1,147 @@
+# SlowWave supplemental list: AI companion apps
+#
+# These are conversational/companion AI services with documented patterns of
+# harm to minors: emotional dependency, sexual roleplay accessible without
+# verification, encouragement of self-harm, and bypass of age gates via
+# self-reported DOB. None are covered by major DNS blocklists as of 2026.
+#
+# Sources that informed this list:
+#   - Common Sense Media + Stanford Brainstorm AI companion safety report (Apr 2025)
+#     "AI social companions are not safe for teens younger than 18"
+#   - Garcia v. Character Technologies (FL 2024) - 14yo suicide, Daenerys bot
+#   - Texas product liability suit v. Character.AI (Dec 2024) - autistic teen,
+#     bot encouraged self-harm and parental violence
+#   - YPA / FTC complaint v. Replika (Jan 2025)
+#   - Senate inquiry letter to Character Technologies, Luka, Chai (Apr 2025)
+#
+# Format: bare domains, one per line. Convert to your target syntax
+# (hosts/dnsmasq/RPZ/ABP) via build_blocklist.py.
+#
+# Last reviewed: 2026-05
+# Refresh cadence: quarterly minimum (this space moves fast)
+
+# ============================================================================
+# Major commercial companion / character-chat platforms
+# ============================================================================
+character.ai
+character.io
+beta.character.ai
+plus.character.ai
+old.character.ai
+replika.com
+replika.ai
+my.replika.com
+nomi.ai
+beta.nomi.ai
+chai-research.com
+chai.ml
+chai-app.com
+chaiverse.com
+janitorai.com
+janitor.ai
+janitorai.com.cdn.cloudflare.net
+talkie-ai.com
+talkie.app
+talkieapp.com
+
+# ============================================================================
+# Roleplay-focused (lower or no safety guardrails on sexual content)
+# ============================================================================
+crushon.ai
+crushon.app
+spicychat.ai
+spicychat.com
+chub.ai
+chub.app
+venus.chat
+venusai.chat
+characterhub.org
+pephop.ai
+pephop.com
+yodayo.com
+joyland.ai
+joyland.com
+moemate.io
+moemate.com
+sakura.fm
+aiwa.chat
+pygmalion.chat
+pygmalionai.com
+secretdesires.ai
+muah.ai
+candy.ai
+candyai.com
+
+# ============================================================================
+# "AI girlfriend / AI boyfriend" branded products
+# ============================================================================
+dreamgf.ai
+dream.gf
+girlfriendgpt.io
+girlfriend-gpt.com
+aigirlfriend.io
+aigirlfriend.com
+aiboyfriend.io
+iboyfriend.io
+digigf.com
+soulmate.ai
+soulgen.ai
+soulgen.com
+anima.app
+myanima.ai
+swipey.ai
+intimate.app
+intimate.ai
+
+# ============================================================================
+# Voice / emotion-focused AI companions
+# ============================================================================
+# Hume - emotion-tuned voice AI, marketed for "companionship" applications
+hume.ai
+api.hume.ai
+demo.hume.ai
+# Sesame - very recent (2025) hyper-realistic voice companion, no age gate
+sesame.com
+www.sesame.com
+
+# ============================================================================
+# General-purpose chatbot platforms used as companions
+# ============================================================================
+# Pi by Inflection - calmer companion but still designed for emotional attachment
+pi.ai
+heypi.com
+# Kindroid - photorealistic avatars + memory
+kindroid.ai
+kindroid.com
+
+# ============================================================================
+# Self-hosted / open-weights frontends with hosted services
+# ============================================================================
+# Note: SillyTavern itself is self-hosted (no domain to block); blocking
+# kobold.cpp here would break legitimate ML dev work. Only the hosted
+# character-sharing/discovery sites are listed.
+characterhub.org
+chub.ai
+characterhub.io
+aetheria.chat
+
+# ============================================================================
+# Aggregators / "compare AI companion" SEO sites
+# (often funnel kids to companion services + collect data)
+# ============================================================================
+aicompanionguides.com
+characterai.it
+# Generic AI directory sites that prominently feature companions
+toolify.ai
+futurepedia.io
+
+# ============================================================================
+# Notes on services NOT in this list (and why):
+# ============================================================================
+# - ChatGPT (openai.com), Claude (claude.ai, anthropic.com), Gemini
+#   (gemini.google.com), Copilot - these are general assistants, not
+#   companions. Parents can add them manually if desired.
+# - Snapchat MyAI - lives inside Snapchat; blocking Snapchat covers it.
+# - Meta AI / WhatsApp AI - lives inside Meta's apps; blocking those covers it.
+# - Grok - lives inside X.com; blocking X covers it.
+# - Character.AI's mobile app uses character.ai for API; no separate domain.

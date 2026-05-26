@@ -1,0 +1,324 @@
+# SlowWave blocklist policy
+#
+# Maps age tiers to a union of category sources. The build script reads this,
+# fetches each source, parses it, dedupes, and writes a per-tier dnsmasq
+# blocklist file.
+#
+# Tiers follow the UK ICO Age Appropriate Design Code brackets, with the
+# Australian "under-16 social media" line at tier 5 boundary.
+#
+# Editing this file:
+#   - Add/remove category names under each tier to compose the block policy
+#   - Add/edit sources under `categories:` to change what each category covers
+#   - Run `python3 build_blocklist.py --verify` to check all URLs reachable
+#   - Run `python3 build_blocklist.py` to regenerate output files
+#
+# All URLs in this file were verified reachable at policy authoring time.
+# If build_blocklist.py reports 404s, the upstream maintainer renamed
+# something - check the repo README and update accordingly.
+#
+# Path patterns:
+#   - HaGeZi main lists (multi tiers, TIF, native trackers, DoH-only) live
+#     at /domains/<name>.txt
+#   - HaGeZi category-specific lists (NSFW, gambling, social, piracy,
+#     URL shorteners, dynamic DNS, nosafesearch, full bypass) live at
+#     /wildcard/<name>-onlydomains.txt
+#   - StevenBlack extensions live at /alternates/<combo>/hosts, NOT
+#     /extensions/<single>/hosts
+#   - ShadowWhisperer categories are bare names at /Lists/<Category> (no
+#     extension, case-sensitive, space-encoded as %20)
+
+# ----------------------------------------------------------------------------
+# Build settings
+# ----------------------------------------------------------------------------
+settings:
+  output_dir: /etc/slowwave/blocklists
+  cache_dir: /var/cache/slowwave/blocklist-cache
+  output_format: dnsmasq          # dnsmasq | hosts | plain
+  sinkhole: "#"                   # # = NXDOMAIN-equivalent for v4+v6
+  refresh_hours: 6
+  collapse_subdomains: true
+  fetch_timeout_seconds: 30
+  allowlist_file: allowlist.txt
+  parent_allowlist_file: /etc/slowwave/parent_allowlist.txt
+
+# ----------------------------------------------------------------------------
+# Age tier definitions
+# ----------------------------------------------------------------------------
+tiers:
+
+  tier1_0_to_5:
+    description: "Ages 0-5 - extremely restrictive; allowlist-style use recommended"
+    categories:
+      - malware_security
+      - trackers
+      - native_device_trackers
+      - nsfw
+      - gambling
+      - shock_gore
+      - dating
+      - crypto
+      - ai_companions
+      - social_broad
+      - chat_anonymous
+      - location_broadcasting
+      - url_shorteners
+      - dynamic_dns_free_hosting
+      - bypass_dns_vpn
+      - piracy
+      - nosafesearch_engines
+      - safesearch_force        # CNAME rewrites, not blocks
+
+  tier2_6_to_9:
+    description: "Ages 6-9"
+    categories:
+      - malware_security
+      - trackers
+      - native_device_trackers
+      - nsfw
+      - gambling
+      - shock_gore
+      - dating
+      - crypto
+      - ai_companions
+      - social_broad
+      - chat_anonymous
+      - location_broadcasting
+      - url_shorteners
+      - dynamic_dns_free_hosting
+      - bypass_dns_vpn
+      - piracy
+      - nosafesearch_engines
+      - safesearch_force
+
+  tier3_10_to_12:
+    description: "Ages 10-12 (tweens) - some messaging/gaming allowed via allowlist"
+    categories:
+      - malware_security
+      - trackers
+      - native_device_trackers
+      - nsfw
+      - gambling
+      - shock_gore
+      - dating
+      - crypto
+      - ai_companions
+      - social_broad
+      - chat_anonymous
+      - location_broadcasting
+      - bypass_dns_vpn
+      - piracy
+      - nosafesearch_engines
+      - safesearch_force
+
+  tier4_13_to_15:
+    description: "Ages 13-15 - COPPA-adult, pre-Aussie-16-line"
+    categories:
+      - malware_security
+      - trackers
+      - native_device_trackers
+      - nsfw
+      - gambling
+      - shock_gore
+      - crypto
+      - ai_companions
+      - social_major
+      - chat_anonymous
+      - location_broadcasting
+      - bypass_dns_vpn
+      - safesearch_force
+
+  tier5_16_to_17:
+    description: "Ages 16-17 - light touch focused on integrity + tracker block"
+    categories:
+      - malware_security
+      - trackers
+      - native_device_trackers
+      - nsfw
+      - gambling
+      - ai_companions
+      - bypass_dns_vpn
+      - safesearch_force
+
+  adult:
+    description: "18+ - integrity layer only; everything else opt-in"
+    categories:
+      - malware_security
+
+# ----------------------------------------------------------------------------
+# Category definitions
+# ----------------------------------------------------------------------------
+categories:
+
+  malware_security:
+    description: "Malware, phishing, scams, browser hijackers"
+    # NOTE: HaGeZi's tif.txt is ~1.4M entries (~40MB after dnsmasq formatting).
+    # On a Raspberry Pi 3 / 1GB-RAM device, swap to tif.mini-onlydomains.txt
+    # in wildcard/ which is ~140k entries (much more memory-friendly).
+    # Alternative URL:
+    #   https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/tif.mini-onlydomains.txt
+    sources:
+      - url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/tif.txt
+        format: domains
+      - url: https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Malware
+        format: domains
+      - url: https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Scam
+        format: domains
+
+  trackers:
+    description: "Behavioral analytics, ad networks, fingerprinting"
+    sources:
+      - url: https://easylist.to/easylist/easyprivacy.txt
+        format: adblock
+      - url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/pro.txt
+        format: domains
+      - url: https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Tracking
+        format: domains
+
+  native_device_trackers:
+    description: "Device-OS telemetry: Samsung/LG/Roku/Amazon/Xiaomi/TikTok native/etc."
+    sources:
+      - url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.samsung.txt
+        format: domains
+      - url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.lgwebos.txt
+        format: domains
+      - url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.roku.txt
+        format: domains
+      - url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.amazon.txt
+        format: domains
+      - url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.xiaomi.txt
+        format: domains
+      - url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.tiktok.txt
+        format: domains
+      - url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.oppo-realme.txt
+        format: domains
+      - url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.vivo.txt
+        format: domains
+      - url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.huawei.txt
+        format: domains
+      # Apple is opt-in - blocking native.apple.txt can break iCloud/iMessage
+      # - url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.apple.txt
+      #   format: domains
+
+  nsfw:
+    description: "Pornography, adult content, shock"
+    sources:
+      - url: https://nsfw.oisd.nl/domainswild2
+        format: domains
+      - url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/nsfw-onlydomains.txt
+        format: domains
+      - url: https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Adult
+        format: domains
+
+  gambling:
+    description: "Casinos, sportsbooks, poker, loot-box marketplaces"
+    sources:
+      - url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/gambling-onlydomains.txt
+        format: domains
+      - url: https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Gambling
+        format: domains
+
+  shock_gore:
+    description: "Gore, torture, graphic violence sites"
+    sources:
+      - url: https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Shock
+        format: domains
+
+  dating:
+    description: "Dating sites - inappropriate for minors"
+    sources:
+      - url: https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Dating
+        format: domains
+
+  crypto:
+    description: "Crypto exchanges, NFT marketplaces, mining pools"
+    sources:
+      - url: https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Cryptocurrency
+        format: domains
+
+  ai_companions:
+    description: "AI companion / character chat apps - SlowWave's gap-filler"
+    sources:
+      - file: supplemental/ai_companions.txt
+        format: domains
+
+  social_broad:
+    description: "Broad social media list - StevenBlack social + HaGeZi social + Aussie 10"
+    sources:
+      - url: https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/social-only/hosts
+        format: hosts
+      - url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/social-onlydomains.txt
+        format: domains
+      - file: supplemental/social_major_aussie10.txt
+        format: domains
+
+  social_major:
+    description: "Aussie 10 only - tighter list for older tiers"
+    sources:
+      - file: supplemental/social_major_aussie10.txt
+        format: domains
+
+  chat_anonymous:
+    description: "Random-pairing video/text chat, anonymous Q&A"
+    sources:
+      - file: supplemental/livestream_anonymous_chat.txt
+        format: domains
+
+  location_broadcasting:
+    description: "Life360, location-sharing widgets, stalkerware"
+    sources:
+      - file: supplemental/location_broadcasting.txt
+        format: domains
+
+  url_shorteners:
+    description: "bit.ly etc. - mask malicious targets"
+    sources:
+      - url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/urlshortener-onlydomains.txt
+        format: domains
+
+  dynamic_dns_free_hosting:
+    description: "Dynamic DNS + free hosting - common for kid workarounds"
+    sources:
+      - url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/dyndns-onlydomains.txt
+        format: domains
+      - url: https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Dynamic
+        format: domains
+      - url: https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Free
+        format: domains
+
+  bypass_dns_vpn:
+    description: "DoH/DoT endpoints, VPN providers, Tor - FILTER INTEGRITY"
+    # CRITICAL: This category must be on for all minor tiers and should be
+    # difficult to override from the SlowWave UI. A kid who bypasses DNS
+    # defeats every other category.
+    sources:
+      - url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/doh-vpn-proxy-bypass-onlydomains.txt
+        format: domains
+      - url: https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/DNS
+        format: domains
+      - url: https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Tunnels
+        format: domains
+      - file: supplemental/bypass_dns_vpn.txt
+        format: domains
+
+  piracy:
+    description: "Torrent sites, illegal streaming"
+    sources:
+      - url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/anti.piracy-onlydomains.txt
+        format: domains
+
+  nosafesearch_engines:
+    description: "BLOCKS search engines that don't support SafeSearch (DDG Lite, etc.)"
+    # This list blocks engines that don't honor SafeSearch. Pair with
+    # safesearch_force below (which rewrites the engines that DO support it).
+    sources:
+      - url: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/nosafesearch-onlydomains.txt
+        format: domains
+
+  safesearch_force:
+    description: "Force SafeSearch on Google/Bing/YouTube/DuckDuckGo via CNAME rewrites"
+    # This is NOT a blocklist - it emits dnsmasq cname= lines that rewrite
+    # search-engine domains to their safesearch-enforced equivalents.
+    sources:
+      - file: supplemental/safesearch_rewrites.txt
+        format: safesearch_rewrites

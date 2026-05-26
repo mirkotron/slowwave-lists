@@ -1,0 +1,118 @@
+# SlowWave supplemental list: Major social media platforms
+#
+# This is the Australian "Aussie 10" list (Online Safety Amendment, effective
+# Dec 10 2025) - the narrowest defensible "block social" set for tier 5
+# (16-17yo) since it has explicit legal precedent.
+#
+# For younger tiers (0-15), use this list UNIONED with StevenBlack's social
+# extension via the policy file - StevenBlack covers broader social (forums,
+# smaller networks, etc.) which is appropriate for younger kids.
+#
+# Australian regulator explicitly EXEMPTED: Discord, GitHub, Google Classroom,
+# Messenger, Pinterest, Roblox, Steam, WhatsApp, YouTube Kids. These are NOT
+# in this list. Add them per-tier in policy.yaml if desired.
+#
+# Last reviewed: 2026-05
+
+# ============================================================================
+# Meta family (Aussie 10: Facebook, Instagram, Threads)
+# ============================================================================
+facebook.com
+www.facebook.com
+m.facebook.com
+fb.com
+fbcdn.net
+instagram.com
+www.instagram.com
+cdninstagram.com
+threads.net
+www.threads.net
+threads.com
+
+# ============================================================================
+# Snapchat (Aussie 10)
+# ============================================================================
+snapchat.com
+www.snapchat.com
+snap.com
+sc-cdn.net
+sc-static.net
+snap-dev.net
+
+# ============================================================================
+# TikTok (Aussie 10)
+# ============================================================================
+tiktok.com
+www.tiktok.com
+m.tiktok.com
+tiktokcdn.com
+tiktokv.com
+musical.ly
+bytedance.com
+byteoversea.com
+# TikTok Live separate domain
+tiktoklive.com
+
+# ============================================================================
+# YouTube (Aussie 10) - NOTE: YouTube Kids exempted by Australia
+# Block youtube.com but allow youtubekids.com in lower tiers via allowlist
+# ============================================================================
+youtube.com
+www.youtube.com
+m.youtube.com
+youtu.be
+youtubei.googleapis.com
+# YouTube Shorts uses same domain - blocked by blocking youtube.com
+
+# ============================================================================
+# X / Twitter (Aussie 10)
+# ============================================================================
+x.com
+www.x.com
+twitter.com
+www.twitter.com
+t.co
+twimg.com
+pbs.twimg.com
+
+# ============================================================================
+# Reddit (Aussie 10)
+# ============================================================================
+reddit.com
+www.reddit.com
+old.reddit.com
+new.reddit.com
+i.reddit.com
+i.redd.it
+redd.it
+redditmedia.com
+redditstatic.com
+
+# ============================================================================
+# Twitch (Aussie 10)
+# ============================================================================
+twitch.tv
+www.twitch.tv
+ttvnw.net
+jtvnw.net
+
+# ============================================================================
+# Kick (Aussie 10)
+# ============================================================================
+kick.com
+www.kick.com
+kick.cm
+
+# ============================================================================
+# BeReal - not on Aussie 10 but identical pattern (algorithmic social with
+# location features), commonly included in school/parent blocklists
+# ============================================================================
+bereal.com
+bereal.app
+
+# ============================================================================
+# Tumblr - heavy presence of pro-ana / self-harm communities documented
+# ============================================================================
+tumblr.com
+www.tumblr.com
+media.tumblr.com

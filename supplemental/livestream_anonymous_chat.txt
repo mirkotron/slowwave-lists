@@ -1,0 +1,84 @@
+# SlowWave supplemental list: Anonymous chat / random-pairing services
+#
+# Sites that pair users (often minors with strangers) for video or text chat
+# with minimal moderation. Documented as primary grooming and CSAM-exposure
+# vectors. Omegle shut down Nov 2023; the ecosystem has fragmented into many
+# clones, most worse-moderated than the original.
+#
+# Standard upstream lists (HaGeZi NSFW, OISD NSFW, etc.) cover some of these
+# but coverage is patchy and clones reappear quickly. This is a gap-filler.
+#
+# Last reviewed: 2026-05
+# Refresh cadence: monthly (clones appear constantly)
+
+# ============================================================================
+# Omegle and direct clones (post-shutdown)
+# ============================================================================
+omegle.com
+www.omegle.com
+ometv.tv
+ome.tv
+omegletv.com
+omegle.tv
+omegle.online
+chatroulette.com
+emeraldchat.com
+emerald.chat
+
+# ============================================================================
+# Random video chat (lower moderation)
+# ============================================================================
+chathub.cam
+chathub.com
+chathub.dev
+shagle.com
+chatib.us
+chatib.com
+fruzo.com
+chatspin.com
+chatrandom.com
+camsurf.com
+azar.com
+azarlive.com
+hay.live
+hay.chat
+monkey.cool
+monkey.app
+holla.world
+hily.com
+joingy.com
+y99.in
+
+# ============================================================================
+# Anonymous text chat / forums  
+# ============================================================================
+yikyak.com
+www.yikyak.com
+whisper.sh
+www.whisper.sh
+# F3 (formerly ASKfm) - anonymous Q&A, heavily implicated in teen suicides
+ask.fm
+www.ask.fm
+f3.cool
+www.f3.cool
+# NGL - anonymous Instagram add-on
+ngl.link
+www.ngl.link
+# Sendit - similar anonymous prompt service
+sendit.com
+sendit.gg
+# Sarahah - resurrected anonymous messaging
+sarahah.com
+
+# ============================================================================
+# "Confession" / Reddit-style anonymous communities targeting teens
+# ============================================================================
+whisper.com
+postsecret.com
+# (Reddit itself is on the Aussie 10 social_major list, not duplicated here)
+
+# ============================================================================
+# Kick is in social_major (Aussie 10 list). Not duplicated.
+# Discord is exempted by Australia and is not in this list by default;
+# parent can add manually for younger tiers.
+# ============================================================================

@@ -1,0 +1,61 @@
+# SlowWave supplemental list: Location-broadcasting apps
+#
+# Apps whose primary or significant function is continuous broadcast of a
+# child's real-time location to peers or third parties. Research (The
+# Conversation, Dec 2025) shows young people misread these as "care" signals
+# and they are increasingly implicated in stalking, coercive control, and
+# grooming patterns.
+#
+# Caveat: some of these (notably Apple Find My) cannot be DNS-blocked without
+# breaking iOS ecosystem features parents may want. Listed for completeness,
+# annotated where partial-block recommended.
+#
+# Snap Map is NOT in this list - it lives inside snapchat.com, which is
+# already in the social_major tier. Blocking Snapchat blocks Snap Map.
+#
+# Last reviewed: 2026-05
+
+# ============================================================================
+# Standalone location-sharing apps
+# ============================================================================
+life360.com
+www.life360.com
+api.life360.com
+cdn.life360.com
+# Locket widget - photo+location widget extremely popular with tweens
+locket.camera
+locketcamera.com
+# Pingu - newer Gen Z location app
+pingu.app
+# Around (one of the Zenly successor apps)
+around.me
+# Citizen - crime/incident location reporting, broadcasts user location
+citizen.com
+
+# ============================================================================
+# Location features of social apps already covered elsewhere
+# (listed for documentation; blocking parent app covers these)
+# ============================================================================
+# Snap Map      -> blocked via snapchat.com
+# Instagram Map -> blocked via instagram.com
+# BeReal map    -> blocked via bereal.com
+# Find My (Apple) -> NOT blocked, would break iCloud. Handle via Screen Time.
+# Google Maps location sharing -> NOT blocked, breaks Maps. Handle via account.
+
+# ============================================================================
+# Tracker / stalkerware adjacent (marketed to parents, abused by predators)
+# ============================================================================
+# These are explicitly stalker-style trackers - block by default for all tiers
+mspy.com
+www.mspy.com
+flexispy.com
+hoverwatch.com
+spyzie.com
+spyzie.io
+xnspy.com
+cocospy.com
+clevguard.com
+kidsguardpro.com
+spyera.com
+mobistealth.com
+phonespying.com

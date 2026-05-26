@@ -1,0 +1,79 @@
+# SlowWave SafeSearch enforcement - CNAME rewrites
+#
+# Format: source_domain target_domain
+# build_blocklist.py emits these as dnsmasq `cname=source,target` lines.
+#
+# Effect: when the child resolves google.com, dnsmasq returns the IP of
+# forcesafesearch.google.com instead, which Google's infrastructure handles
+# as if SafeSearch were forced on. Same pattern for YouTube, Bing,
+# DuckDuckGo.
+#
+# These targets are STABLE infrastructure maintained by the search engines
+# themselves specifically for school/family use. They almost never change.
+#
+# This file pairs with the `nosafesearch_engines` category, which BLOCKS
+# engines that don't support SafeSearch (DuckDuckGo Lite, Searx instances,
+# etc.). Use both together.
+#
+# Last verified: 2026-05
+
+# ----------------------------------------------------------------------------
+# Google Search (force SafeSearch=on)
+# ----------------------------------------------------------------------------
+www.google.com forcesafesearch.google.com
+google.com forcesafesearch.google.com
+# Country TLDs - Google forces SafeSearch globally via this single hostname
+# regardless of the source TLD, so all redirects land on the same target.
+www.google.ca forcesafesearch.google.com
+google.ca forcesafesearch.google.com
+www.google.co.uk forcesafesearch.google.com
+google.co.uk forcesafesearch.google.com
+www.google.com.au forcesafesearch.google.com
+google.com.au forcesafesearch.google.com
+www.google.de forcesafesearch.google.com
+google.de forcesafesearch.google.com
+www.google.fr forcesafesearch.google.com
+google.fr forcesafesearch.google.com
+
+# ----------------------------------------------------------------------------
+# YouTube (force Restricted Mode)
+# ----------------------------------------------------------------------------
+# restrictmoderate.youtube.com = "Moderate" restricted mode (kid-friendly)
+# restrict.youtube.com         = "Strict" restricted mode (most aggressive)
+# Pick one - using moderate as a balance; switch to restrict.youtube.com
+# for tier 1-2 if you want maximum strictness.
+www.youtube.com restrictmoderate.youtube.com
+youtube.com restrictmoderate.youtube.com
+m.youtube.com restrictmoderate.youtube.com
+youtubei.googleapis.com restrictmoderate.youtube.com
+youtube.googleapis.com restrictmoderate.youtube.com
+www.youtube-nocookie.com restrictmoderate.youtube.com
+
+# ----------------------------------------------------------------------------
+# Bing (force SafeSearch=strict)
+# ----------------------------------------------------------------------------
+www.bing.com strict.bing.com
+bing.com strict.bing.com
+
+# ----------------------------------------------------------------------------
+# DuckDuckGo (force SafeSearch=strict)
+# ----------------------------------------------------------------------------
+duckduckgo.com safe.duckduckgo.com
+www.duckduckgo.com safe.duckduckgo.com
+
+# ----------------------------------------------------------------------------
+# Notes on engines NOT in this list
+# ----------------------------------------------------------------------------
+# - Yahoo Search:    no SafeSearch CNAME equivalent; use nosafesearch_engines
+#                    category to block instead
+# - Yandex:          family.yandex.ru exists but is Russian-language only;
+#                    blocking yandex.com via nosafesearch_engines is cleaner
+# - Brave Search:    no SafeSearch CNAME; partial support via account
+#                    settings only
+# - Startpage/Searx: no central SafeSearch enforcement; block via
+#                    nosafesearch_engines
+# - Kagi:            paid only; account-level setting, not DNS-rewritable
+#
+# Pinterest, TikTok, Instagram, etc. have their own "restricted mode" or
+# "sensitive content" settings, but none are DNS-rewritable. They must
+# be configured per-account by the parent.
