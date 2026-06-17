@@ -79,6 +79,18 @@ TIER_DISPLAY = {
     "adult":          "Adult (18+)",
 }
 
+# Age band each preset targets, surfaced in the preset JSON so the M7
+# setup wizard can recommend one from a child's age. age_max=None = no
+# upper bound (adult).
+TIER_AUDIENCE = {
+    "tier1_0_to_5":   {"age_min": 0,  "age_max": 5},
+    "tier2_6_to_9":   {"age_min": 6,  "age_max": 9},
+    "tier3_10_to_12": {"age_min": 10, "age_max": 12},
+    "tier4_13_to_15": {"age_min": 13, "age_max": 15},
+    "tier5_16_to_17": {"age_min": 16, "age_max": 17},
+    "adult":          {"age_min": 18, "age_max": None},
+}
+
 SOCIAL_FAMILY = {
     "social_meta", "social_major", "social_broad", "short_form_video",
 }
@@ -117,24 +129,49 @@ def sha256_file(p: Path) -> str:
     return h.hexdigest()
 
 
+def _count_list_domains(filename: str) -> int | None:
+    """Approximate domain count of a shipped supplemental list: non-empty,
+    non-comment lines. Returns None for sources we can't count at build
+    time (upstream URLs)."""
+    p = SUPP / Path(filename).name
+    if not p.exists():
+        return None
+    n = 0
+    for line in p.read_text(errors="replace").splitlines():
+        s = line.strip()
+        if not s or s.startswith(("#", "!")):
+            continue
+        n += 1
+    return n
+
+
 def build_categories_json(cats_def: dict) -> dict:
     out = []
     for name, defn in cats_def.items():
         group, default_action, kind = CATEGORY_META.get(
             name, ("manual", "block", "blocklist"))
         sources = []
+        cat_count = 0
+        cat_countable = False  # at least one source we could count
         for s in defn.get("sources", []):
             if "url" in s:
+                # Can't count an upstream list without fetching it.
                 sources.append({
                     "kind": "upstream_url",
                     "location": s["url"],
                     "format": s.get("format", "domains"),
+                    "domain_count": None,
                 })
             elif "file" in s:
+                c = _count_list_domains(s["file"])
+                if c is not None:
+                    cat_count += c
+                    cat_countable = True
                 sources.append({
                     "kind": "slowwave_file",
                     "location": f"lists/{Path(s['file']).name}",
                     "format": s.get("format", "domains"),
+                    "domain_count": c,
                 })
         out.append({
             "name": name,
@@ -145,6 +182,9 @@ def build_categories_json(cats_def: dict) -> dict:
             "default_action": default_action,
             "kind": kind,
             "group": group,
+            # Sum over countable sources; null when nothing is countable
+            # (e.g. all upstream) so the chooser can show "—" rather than 0.
+            "domain_count": cat_count if cat_countable else None,
             "sources": sources,
         })
     # The two categories the 0.7.3 → 0.8 migration creates from the
@@ -207,6 +247,7 @@ def main() -> int:
             "name": tier_name,
             "display_name": TIER_DISPLAY.get(tier_name, tier_name),
             "description": tier_def.get("description", ""),
+            "audience": TIER_AUDIENCE.get(tier_name),
             "version": version,
             "policy_rows": policy_rows_for_tier(tier_def),
         }
