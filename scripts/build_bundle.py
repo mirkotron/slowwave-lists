@@ -33,6 +33,7 @@ except ImportError:
 
 ROOT = Path(__file__).resolve().parent.parent
 SUPP = ROOT / "supplemental"
+ALLOWLIST = ROOT / "allowlist.txt"
 POLICY = ROOT / "policy.yaml"
 KEY = Path.home() / ".slowwave" / "lists-signing.key"
 DIST = ROOT / "dist"
@@ -145,6 +146,16 @@ def _count_list_domains(filename: str) -> int | None:
     return n
 
 
+def _count_allowlist_domains() -> int:
+    """Non-empty, non-comment lines in the curator allowlist."""
+    n = 0
+    for line in ALLOWLIST.read_text(errors="replace").splitlines():
+        s = line.strip()
+        if s and not s.startswith(("#", "!")):
+            n += 1
+    return n
+
+
 def build_categories_json(cats_def: dict) -> dict:
     out = []
     for name, defn in cats_def.items():
@@ -204,12 +215,23 @@ def build_categories_json(cats_def: dict) -> dict:
     out.append({
         "name": "whitelist_education",
         "display_name": "Educational sites (always allow)",
-        "description": "Curated allowlist that bypasses throttle for educational domains.",
+        "description": "Curated allowlist that bypasses throttle for educational "
+                       "domains and protects core infrastructure (Google/Apple/"
+                       "Microsoft auth + CDNs) from blocklist false positives.",
         "managed_by": "slowwave",
         "default_action": "pass",
         "kind": "allowlist",
         "group": "whitelist",
-        "sources": [],
+        # Ships the curator allowlist as a real source. The daemon's M1
+        # migration ALSO seeds this category from the live DB (the parent's
+        # manual edu entries) — that's a `manual` source and survives; this
+        # bundle source is additive (slowwave_file, replaced on each update).
+        "sources": [{
+            "kind": "slowwave_file",
+            "location": f"lists/{ALLOWLIST.name}",
+            "format": "domains",
+            "domain_count": _count_allowlist_domains(),
+        }],
     })
     return {"categories": out}
 
@@ -237,6 +259,14 @@ def main() -> int:
 
     for f in sorted(SUPP.glob("*.txt")):
         shutil.copy2(f, work / "lists" / f.name)
+
+    # Ship the curator allowlist INSIDE the bundle so the daemon actually
+    # receives it. Without this, whitelist_education arrives with empty
+    # sources and the device has zero allowlist domains — an NSFW/malware
+    # false positive can then NXDOMAIN google/youtube with nothing to
+    # override it (2026-06-18 integrated run). The daemon subtracts these
+    # from the compiled block set (see build_categories_json below).
+    shutil.copy2(ALLOWLIST, work / "lists" / ALLOWLIST.name)
 
     (work / "categories.json").write_text(
         json.dumps(build_categories_json(cats_def), indent=2) + "\n"

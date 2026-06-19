@@ -70,7 +70,25 @@ google.com
 googleapis.com
 gstatic.com
 googleusercontent.com
+
+# ---------------------------------------------------------------------------
+# YouTube delivery infrastructure
+# ---------------------------------------------------------------------------
+# These are the CDNs YouTube playback and thumbnails depend on. Aggregator
+# NSFW/malware lists routinely over-catch them, which NXDOMAINs all of
+# YouTube even when no category is meant to block it. Keeping them here
+# means a *false positive* can't take YouTube down.
+#
+# IMPORTANT — this is collateral-damage protection, NOT a policy override.
+# If a parent DELIBERATELY blocks YouTube (a future per-site red zone, or a
+# tier that blocks the `social` group), the daemon's allowlist subtraction
+# would currently also lift that intentional block — the allowlist is
+# global, the parent's intent is per-child. That tension is tracked for the
+# per-site green/red-zone work (ROADMAP M4+); until then YouTube is never an
+# enabled block target in any foundation posture, so this is safe.
 youtube.com
-# (Note: youtube.com is here as a domain placeholder. If you block YouTube
-# in a tier, this allowlist entry will override. Remove this line if you
-# want YouTube blocks to actually take effect.)
+youtu.be
+youtube-nocookie.com
+googlevideo.com
+ytimg.com
+ggpht.com
