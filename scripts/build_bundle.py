@@ -214,10 +214,9 @@ def build_categories_json(cats_def: dict) -> dict:
     })
     out.append({
         "name": "whitelist_education",
-        "display_name": "Educational sites (always allow)",
-        "description": "Curated allowlist that bypasses throttle for educational "
-                       "domains and protects core infrastructure (Google/Apple/"
-                       "Microsoft auth + CDNs) from blocklist false positives.",
+        "display_name": "Educational sites",
+        "description": "A short curated list of learning sites that are never "
+                       "blocked and skip the slow lane.",
         "managed_by": "slowwave",
         "default_action": "pass",
         "kind": "allowlist",
@@ -240,10 +239,15 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("version", help="calendar version e.g. 2026.06.01")
     ap.add_argument("--channel", default="stable")
+    ap.add_argument(
+        "--skip-sign", action="store_true",
+        help="build everything except the .sig (sign the tarball on the "
+             "curator's machine afterwards; see RELEASING.md)",
+    )
     args = ap.parse_args()
     version = args.version
 
-    if not KEY.exists():
+    if not args.skip_sign and not KEY.exists():
         sys.exit(f"private signing key missing at {KEY}")
 
     policy = yaml.safe_load(POLICY.read_text())
@@ -301,11 +305,17 @@ def main() -> int:
             datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "files": files,
         "notes": (
-            "Initial Phase 0.8 seed bundle (M0). Six age-tier presets "
-            "(young child → adult), 21 categories including social_meta "
-            "and whitelist_education for the 0.7.3 → 0.8 migration. "
-            "Friction-first action defaults on social_* categories per "
-            "plan §1."
+            "The curated allowlist is now learning sites only, and the "
+            "category is called Educational sites. Removed from it: the "
+            "Google/Apple/Microsoft account infrastructure, the YouTube "
+            "delivery CDNs (youtube.com, googlevideo.com, ytimg.com, ...) "
+            "and the regulator-exempt apps (Discord, Roblox, Steam, "
+            "WhatsApp, Messenger, Pinterest, GitHub, YouTube Kids). An "
+            "allowlist entry means full speed and reachable through a "
+            "scheduled Off, which those never deserved. Pairs with slowwave "
+            ">= 0.8.0~m7.60, where the parent's own lists live in their own "
+            "categories (ADR-028). Six age-tier presets and the 21 other "
+            "categories unchanged."
         ),
     }
     (work / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
@@ -316,12 +326,15 @@ def main() -> int:
     tar_sha = sha256_file(tar_path)
 
     sig_path = Path(str(tar_path) + ".sig")
-    subprocess.run(
-        ["openssl", "pkeyutl", "-sign",
-         "-inkey", str(KEY), "-rawin",
-         "-in", str(tar_path), "-out", str(sig_path)],
-        check=True,
-    )
+    if args.skip_sign:
+        sig_path.unlink(missing_ok=True)
+    else:
+        subprocess.run(
+            ["openssl", "pkeyutl", "-sign",
+             "-inkey", str(KEY), "-rawin",
+             "-in", str(tar_path), "-out", str(sig_path)],
+            check=True,
+        )
 
     latest = {
         "version": version,
@@ -351,7 +364,12 @@ def main() -> int:
     )
 
     print(f"  bundle   : {tar_path}  ({tar_path.stat().st_size:,} bytes)")
-    print(f"  signature: {sig_path}")
+    if args.skip_sign:
+        print("  signature: SKIPPED — on the curator's machine run:")
+        print(f"             openssl pkeyutl -sign -inkey ~/.slowwave/lists-signing.key "
+              f"-rawin -in {tar_path.name} -out {sig_path.name}")
+    else:
+        print(f"  signature: {sig_path}")
     print(f"  sha256   : {tar_sha}")
     print(f"  latest   : {DIST / 'latest.json'}")
     print(f"  notes    : {notes_path}")

@@ -36,7 +36,7 @@ openssl pkeyutl -verify -pubin \
 
 ```
 policy.yaml            source of truth (tiers × categories × sources)
-allowlist.txt          global false-positive recovery list
+allowlist.txt          Educational sites (learning sites only since 2026.11.13)
 build_blocklist.py     standalone compiler (parents/developers can
                        run locally; SlowWave daemon ships its own port)
 supplemental/          curated text files included in every release

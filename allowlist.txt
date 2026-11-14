@@ -1,16 +1,20 @@
-# SlowWave allowlist
+# SlowWave allowlist — Educational sites
 #
-# Domains here are NEVER blocked, even if they appear in a blocked category.
-# Use this to whitelist:
-#   - Educational tools that aggregator lists sometimes catch
-#   - Apps explicitly exempted by the Australian regulator
-#   - Anything you've manually verified as safe-for-this-family
+# Domains here are NEVER blocked, even if they appear in a blocked category,
+# and they skip the throttle (the dashboard calls this the fast lane). Since
+# 2026.11.13 this list holds LEARNING SITES ONLY. It used to carry Google /
+# Apple / Microsoft account infrastructure, the YouTube delivery CDNs and the
+# apps the Australian regulator exempted from the under-16 ban; an allowlist
+# entry means full speed and reachable through a scheduled Off, which is the
+# wrong tool for infrastructure and far too much for YouTube, Discord,
+# Roblox or Steam. Parents add their own sites on the Sites screen.
 #
-# Parents can additionally maintain /etc/slowwave/parent_allowlist.txt
-# (path configurable in policy.yaml) which is read and unioned with this.
+# Protecting sign-in and CDN hosts from blocklist false positives needs a
+# "never block, still throttle" action; tracked in the slowwave repo,
+# IMPROVEMENTS.md 2026-11-13.
 #
 # Format: bare domain per line. Subdomains of an allowlisted domain are
-# also allowed (e.g. allowing google.com allows mail.google.com).
+# also allowed (e.g. allowing wikipedia.org allows en.wikipedia.org).
 
 # ---------------------------------------------------------------------------
 # Education
@@ -29,66 +33,3 @@ ck12.org
 nasa.gov
 noaa.gov
 britannica.com
-
-# ---------------------------------------------------------------------------
-# Apps the Australian regulator EXEMPTED from the under-16 ban
-# (you may still choose to block these for younger tiers via policy)
-# ---------------------------------------------------------------------------
-discord.com
-discord.gg
-github.com
-classroom.google.com
-messenger.com
-m.me
-pinterest.com
-roblox.com
-steampowered.com
-steamcommunity.com
-whatsapp.com
-youtubekids.com
-www.youtubekids.com
-
-# ---------------------------------------------------------------------------
-# Apple ecosystem - blocking these breaks the device
-# ---------------------------------------------------------------------------
-apple.com
-icloud.com
-itunes.apple.com
-mzstatic.com
-# Note: mask.icloud.com is NOT here - that's Private Relay which defeats SlowWave
-
-# ---------------------------------------------------------------------------
-# Microsoft / Google infrastructure needed for school accounts
-# ---------------------------------------------------------------------------
-microsoft.com
-office.com
-office365.com
-microsoftonline.com
-live.com
-outlook.com
-google.com
-googleapis.com
-gstatic.com
-googleusercontent.com
-
-# ---------------------------------------------------------------------------
-# YouTube delivery infrastructure
-# ---------------------------------------------------------------------------
-# These are the CDNs YouTube playback and thumbnails depend on. Aggregator
-# NSFW/malware lists routinely over-catch them, which NXDOMAINs all of
-# YouTube even when no category is meant to block it. Keeping them here
-# means a *false positive* can't take YouTube down.
-#
-# IMPORTANT — this is collateral-damage protection, NOT a policy override.
-# If a parent DELIBERATELY blocks YouTube (a future per-site red zone, or a
-# tier that blocks the `social` group), the daemon's allowlist subtraction
-# would currently also lift that intentional block — the allowlist is
-# global, the parent's intent is per-child. That tension is tracked for the
-# per-site green/red-zone work (ROADMAP M4+); until then YouTube is never an
-# enabled block target in any foundation posture, so this is safe.
-youtube.com
-youtu.be
-youtube-nocookie.com
-googlevideo.com
-ytimg.com
-ggpht.com
