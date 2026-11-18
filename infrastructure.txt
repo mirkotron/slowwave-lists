@@ -1,0 +1,60 @@
+# SlowWave protect list — Keeps things working
+#
+# Domains here are NEVER sinkholed by a curated blocklist, and nothing more:
+# they get no fast lane, they ride the schedule's speed like any other site,
+# and a parent's own Blocked list still beats them. The daemon's action for
+# this list is `protect` (slowwave >= 0.8.0~m7.65, ADR-031).
+#
+# Why it exists: the big upstream lists routinely over-catch the hosts a
+# device needs to sign in, update and fetch content. On the live box the
+# `trackers` list sinkholed googleapis.com for everyone (2026-11-13), which
+# breaks Google sign-in, Chrome, Classroom, Docs and every Android app at
+# once. Until 2026.11.13 these hosts rode along in the allowlist, which also
+# gave them full speed and made them reachable through a scheduled Off —
+# far more than infrastructure deserves.
+#
+# What belongs here: sign-in, account, app-store, update and delivery hosts.
+# What does NOT: the apps themselves (youtube.com, discord.com, roblox.com)
+# — a parent who wants those never blocked adds them to Always allowed.
+#
+# Format: bare domain per line. Subdomains are covered (googleapis.com
+# covers fonts.googleapis.com and youtubei.googleapis.com).
+
+# ---------------------------------------------------------------------------
+# Google — accounts, APIs, static assets, user content
+# ---------------------------------------------------------------------------
+google.com
+googleapis.com
+gstatic.com
+googleusercontent.com
+
+# ---------------------------------------------------------------------------
+# Apple — blocking these breaks the device
+# ---------------------------------------------------------------------------
+apple.com
+icloud.com
+itunes.apple.com
+mzstatic.com
+# Note: mask.icloud.com is NOT here — that's Private Relay, which defeats SlowWave
+
+# ---------------------------------------------------------------------------
+# Microsoft — school accounts, Office, Windows sign-in
+# ---------------------------------------------------------------------------
+microsoft.com
+office.com
+office365.com
+microsoftonline.com
+live.com
+outlook.com
+
+# ---------------------------------------------------------------------------
+# Delivery networks behind YouTube and Google (video, thumbnails, embeds)
+# ---------------------------------------------------------------------------
+# NSFW/malware aggregators over-catch these and take down every YouTube
+# embed on a school site. youtube.com itself is deliberately NOT here: a
+# parent's Blocked list beats this list anyway, and the app is the parent's
+# call, not infrastructure.
+googlevideo.com
+ytimg.com
+ggpht.com
+youtube-nocookie.com

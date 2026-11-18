@@ -37,6 +37,8 @@ openssl pkeyutl -verify -pubin \
 ```
 policy.yaml            source of truth (tiers × categories × sources)
 allowlist.txt          Educational sites (learning sites only since 2026.11.13)
+infrastructure.txt     Keeps things working: sign-in and delivery hosts a
+                       curated list must never sinkhole (protect, 2026.11.17)
 build_blocklist.py     standalone compiler (parents/developers can
                        run locally; SlowWave daemon ships its own port)
 supplemental/          curated text files included in every release

@@ -34,6 +34,10 @@ except ImportError:
 ROOT = Path(__file__).resolve().parent.parent
 SUPP = ROOT / "supplemental"
 ALLOWLIST = ROOT / "allowlist.txt"
+# 2026.11.17: the protect list — never sinkholed by a curated list, still
+# throttled (slowwave >= 0.8.0~m7.65, ADR-031). Needs the `protect` action;
+# an older daemon loads the category disabled and ignores the action.
+PROTECTLIST = ROOT / "infrastructure.txt"
 POLICY = ROOT / "policy.yaml"
 KEY = Path.home() / ".slowwave" / "lists-signing.key"
 DIST = ROOT / "dist"
@@ -146,10 +150,10 @@ def _count_list_domains(filename: str) -> int | None:
     return n
 
 
-def _count_allowlist_domains() -> int:
-    """Non-empty, non-comment lines in the curator allowlist."""
+def _count_allowlist_domains(path: Path = ALLOWLIST) -> int:
+    """Non-empty, non-comment lines in a curator-written list."""
     n = 0
-    for line in ALLOWLIST.read_text(errors="replace").splitlines():
+    for line in path.read_text(errors="replace").splitlines():
         s = line.strip()
         if s and not s.startswith(("#", "!")):
             n += 1
@@ -232,6 +236,31 @@ def build_categories_json(cats_def: dict) -> dict:
             "domain_count": _count_allowlist_domains(),
         }],
     })
+    # 2026.11.17 — the protect list (ADR-031). Subtracts from the compiled
+    # block set and adds nothing: no fast lane, the schedule's speed still
+    # applies, the parent's own Blocked list still wins. Carries the
+    # Google/Apple/Microsoft sign-in hosts and the YouTube delivery CDNs
+    # that 2026.11.13 took out of the allowlist, this time with the right
+    # action. On under every posture (the daemon treats kind=protectlist
+    # like an allowlist for enabling, nothing else).
+    out.append({
+        "name": "infrastructure",
+        "display_name": "Keeps things working",
+        "description": "Sign-in, app stores and the delivery networks behind "
+                       "Google, Apple, Microsoft and YouTube. A curated list "
+                       "can't block these by mistake; the speed limit still "
+                       "applies, and your own Blocked list still wins.",
+        "managed_by": "slowwave",
+        "default_action": "protect",
+        "kind": "protectlist",
+        "group": "infrastructure",
+        "sources": [{
+            "kind": "slowwave_file",
+            "location": f"lists/{PROTECTLIST.name}",
+            "format": "domains",
+            "domain_count": _count_allowlist_domains(PROTECTLIST),
+        }],
+    })
     return {"categories": out}
 
 
@@ -271,6 +300,7 @@ def main() -> int:
     # override it (2026-06-18 integrated run). The daemon subtracts these
     # from the compiled block set (see build_categories_json below).
     shutil.copy2(ALLOWLIST, work / "lists" / ALLOWLIST.name)
+    shutil.copy2(PROTECTLIST, work / "lists" / PROTECTLIST.name)
 
     (work / "categories.json").write_text(
         json.dumps(build_categories_json(cats_def), indent=2) + "\n"
@@ -305,17 +335,17 @@ def main() -> int:
             datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "files": files,
         "notes": (
-            "The curated allowlist is now learning sites only, and the "
-            "category is called Educational sites. Removed from it: the "
-            "Google/Apple/Microsoft account infrastructure, the YouTube "
-            "delivery CDNs (youtube.com, googlevideo.com, ytimg.com, ...) "
-            "and the regulator-exempt apps (Discord, Roblox, Steam, "
-            "WhatsApp, Messenger, Pinterest, GitHub, YouTube Kids). An "
-            "allowlist entry means full speed and reachable through a "
-            "scheduled Off, which those never deserved. Pairs with slowwave "
-            ">= 0.8.0~m7.60, where the parent's own lists live in their own "
-            "categories (ADR-028). Six age-tier presets and the 21 other "
-            "categories unchanged."
+            "New: a protect list, \"Keeps things working\" (category "
+            "infrastructure, action protect): the Google/Apple/Microsoft "
+            "sign-in hosts and the YouTube delivery CDNs (googleapis.com, "
+            "gstatic.com, googlevideo.com, ytimg.com, ...) can no longer be "
+            "sinkholed by a curated blocklist. They get no fast lane: the "
+            "schedule's speed still applies and the parent's own Blocked "
+            "list still wins. Fixes googleapis.com being NXDOMAIN'd by the "
+            "trackers list for every profile (live box, 2026-11-13). Needs "
+            "slowwave >= 0.8.0~m7.65 (ADR-031); an older daemon loads the "
+            "category disabled and ignores it. Educational sites, the six "
+            "age-tier presets and the 21 other categories unchanged."
         ),
     }
     (work / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
