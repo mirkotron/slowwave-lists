@@ -7,7 +7,9 @@ are fine.
 ## Prerequisites
 
 - Ed25519 private signing key at `~/.slowwave/lists-signing.key`
-  (mode 600). Generated once, kept offline on the curator's machine.
+  (mode 600) on the conductor (the Arch box that drives the lab), where
+  bundles are built. Generated once in May 2026 on the Mac mini M4, which
+  keeps a copy as the offline backup; moved to the conductor 2026-11-17.
   The matching public key lives at `keys/lists-signing.pub` and is
   shipped in the `slowwave-pi` `.deb`.
 - Python 3.11+ with `pyyaml` (`pip install --break-system-packages pyyaml`).
@@ -40,9 +42,12 @@ gh release create 2026.06.01 \
 
 ### Building where the key isn't
 
-The key lives on the curator's machine, which may not have `pyyaml`. Build
-anywhere with `--skip-sign`, sign the tarball where the key is, and bring
-the `.sig` back next to it:
+Normally unnecessary since 2026-11-17: the conductor has both `pyyaml` and
+the key, so `build_bundle.py` signs in the same run. Kept for the case
+where only the M4's backup copy is reachable. Build anywhere with
+`--skip-sign`, sign the tarball where the key is, and bring the `.sig`
+back next to it (keep the ssh command on ONE line — a wrapped paste leaves
+`-out` without a value):
 
 ```
 python3 scripts/build_bundle.py 2026.11.13 --skip-sign
@@ -66,7 +71,8 @@ on its next check (default every 6 hours).
 
 ## Key custody
 
-The Ed25519 private key never leaves the curator's offline machine. If
+The Ed25519 private key lives on the conductor, mode 600, with the M4
+holding the only backup copy; it is never put anywhere shared. If
 the key is compromised or lost, generate a new keypair, ship the new
 public key in a `slowwave-pi` release, and reference the new key as
 `next_key` in the manifest of the last bundle signed with the old key
