@@ -337,23 +337,21 @@ def main() -> int:
             datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "files": files,
         "notes": (
-            "New: a protect list, \"Keeps things working\" (category "
-            "infrastructure, action protect): the Google/Apple/Microsoft "
-            "sign-in hosts and the YouTube delivery CDNs (googleapis.com, "
-            "gstatic.com, googlevideo.com, ytimg.com, ...) can no longer be "
-            "sinkholed by a curated blocklist. They get no fast lane: the "
-            "schedule's speed still applies and the parent's own Blocked "
-            "list still wins. Fixes googleapis.com being NXDOMAIN'd by the "
-            "trackers list for every profile (live box, 2026-11-13). Needs "
-            "slowwave >= 0.8.0~m7.65 (ADR-031); an older daemon loads the "
-            "category disabled and ignores it. Also new: two categories, "
-            "Drugs and Hate, violence and weapons, built from the UT1 lists "
-            "of Universit\u00e9 Toulouse Capitole; they arrive switched off on a "
-            "box that is already set up, and the age presets for under-16s "
-            "include them (Drugs up to 17). Gambling gains the regulators' "
-            "lists of unlicensed sites from Poland and Belgium (39,000 "
-            "domains); Dating gains the UT1 dating list (10,500). "
-            "Educational sites unchanged."
+            "New since 2026.11.13. A protect list, \"Keeps things working\" "
+            "(category infrastructure, action protect): the Google/Apple/"
+            "Microsoft sign-in hosts and the YouTube delivery CDNs "
+            "(googleapis.com, gstatic.com, googlevideo.com, ytimg.com, ...) "
+            "can no longer be sinkholed by a curated blocklist. They get no "
+            "fast lane: the schedule's speed still applies and the parent's "
+            "own Blocked list still wins. Needs slowwave >= 0.8.0~m7.65 "
+            "(ADR-031); an older daemon loads the category disabled and "
+            "ignores it. Two new categories, Drugs and Hate, violence and "
+            "weapons, built from the UT1 lists of Universit\u00e9 Toulouse "
+            "Capitole; they arrive switched off on a box that is already set "
+            "up, and the age presets for under-16s include them (Drugs up to "
+            "17). Gambling gains the regulators' lists of unlicensed sites "
+            "from Poland and Belgium (39,000 domains); Dating gains the UT1 "
+            "dating list (10,500). Educational sites unchanged."
         ),
     }
     (work / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")

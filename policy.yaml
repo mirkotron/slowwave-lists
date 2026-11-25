@@ -226,7 +226,7 @@ categories:
         format: domains
       - url: https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Gambling
         format: domains
-      # 2026.11.17: national regulators' lists of unlicensed gambling sites
+      # 2026.11.24: national regulators' lists of unlicensed gambling sites
       # (Poland, Belgium), refreshed by scripts/fetch_external_lists.py.
       - file: supplemental/gambling_regulators.txt
         format: domains
@@ -242,7 +242,7 @@ categories:
     sources:
       - url: https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Dating
         format: domains
-      # 2026.11.17: UT1 (Université Toulouse Capitole) dating list, cleaned.
+      # 2026.11.24: UT1 (Université Toulouse Capitole) dating list, cleaned.
       - file: supplemental/dating_ut1.txt
         format: domains
 

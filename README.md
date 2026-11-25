@@ -10,7 +10,7 @@ monthly cadence. The bundle holds:
   social list, location/stalkerware, the DoH/VPN bypass set, SafeSearch
   CNAME rewrites.
 - **Snapshots of official and academic lists** (also in `supplemental/`,
-  since 2026.11.17) that are not plain text a device can fetch, or need
+  since 2026.11.24) that are not plain text a device can fetch, or need
   cleaning first: the gambling regulators' lists of unlicensed sites
   (Poland, Belgium) and the UT1 lists of Université Toulouse Capitole for
   dating, drugs, and hate, violence and weapons. `scripts/fetch_external_lists.py`
