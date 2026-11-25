@@ -56,6 +56,8 @@ tiers:
       - nsfw
       - gambling
       - shock_gore
+      - drugs
+      - hate_violence
       - dating
       - crypto
       - ai_companions
@@ -78,6 +80,8 @@ tiers:
       - nsfw
       - gambling
       - shock_gore
+      - drugs
+      - hate_violence
       - dating
       - crypto
       - ai_companions
@@ -100,6 +104,8 @@ tiers:
       - nsfw
       - gambling
       - shock_gore
+      - drugs
+      - hate_violence
       - dating
       - crypto
       - ai_companions
@@ -120,6 +126,8 @@ tiers:
       - nsfw
       - gambling
       - shock_gore
+      - drugs
+      - hate_violence
       - crypto
       - ai_companions
       - social_major
@@ -136,6 +144,7 @@ tiers:
       - native_device_trackers
       - nsfw
       - gambling
+      - drugs
       - ai_companions
       - bypass_dns_vpn
       - safesearch_force
@@ -217,6 +226,10 @@ categories:
         format: domains
       - url: https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Gambling
         format: domains
+      # 2026.11.17: national regulators' lists of unlicensed gambling sites
+      # (Poland, Belgium), refreshed by scripts/fetch_external_lists.py.
+      - file: supplemental/gambling_regulators.txt
+        format: domains
 
   shock_gore:
     description: "Gore, torture, graphic violence sites"
@@ -228,6 +241,23 @@ categories:
     description: "Dating sites - inappropriate for minors"
     sources:
       - url: https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Dating
+        format: domains
+      # 2026.11.17: UT1 (Université Toulouse Capitole) dating list, cleaned.
+      - file: supplemental/dating_ut1.txt
+        format: domains
+
+  drugs:
+    display_name: "Drugs"
+    description: "Sites selling or promoting recreational drugs"
+    sources:
+      - file: supplemental/drugs_ut1.txt
+        format: domains
+
+  hate_violence:
+    display_name: "Hate, violence and weapons"
+    description: "Hate groups, violent content, cults, weapons and explosives"
+    sources:
+      - file: supplemental/hate_violence_ut1.txt
         format: domains
 
   crypto:

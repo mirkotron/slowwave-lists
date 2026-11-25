@@ -1,0 +1,45 @@
+# Hosts never taken into a snapshot list, whatever the source says.
+# One per line; an entry covers its subdomains. Say why.
+#
+# Reviewed 2026-11-24: every entry of the UT1 lists that also sits in the
+# 100,000 most visited sites (Tranco) was read by hand. The long tail
+# below that was not.
+
+# --- UT1 dating: not dating sites
+eventbrite.com          # event tickets
+list-manage.com         # Mailchimp link tracking; blocking breaks newsletter links
+meetup.com              # interest groups
+mashable.com            # news
+timeout.com             # city guides
+theknot.com             # wedding planning
+brides.com              # wedding magazine
+commondreams.org        # news
+sheknows.com            # magazine
+goodmenproject.com      # magazine
+bolde.com               # magazine
+marriage.com            # advice articles
+5lovelanguages.com      # book site
+asexuality.org          # information and support community
+boomplay.com            # music streaming
+yummyanime.tv           # anime
+folkd.com               # bookmarking
+odnoklassniki.ru        # social network; belongs under social, not dating
+xnxx.com                # pornography; the nsfw category already carries it
+
+# --- UT1 drogue: health bodies, advocacy
+parkinson.org           # Parkinson's Foundation
+asam.org                # American Society of Addiction Medicine
+norml.org               # law-reform advocacy
+
+# --- UT1 agressif / sect: watchdogs, reference, news, general platforms
+splcenter.org           # Southern Poverty Law Center, tracks hate groups
+religioustolerance.org  # reference site
+nndb.com                # biography database
+newgrounds.com          # games and animation portal
+pathcom.com             # an internet provider
+jungefreiheit.de        # a newspaper
+
+# --- Poland gambling register: general sites listed for a gambling section
+techopedia.com          # technology reference
+znaki.fm                # news
+egamersworld.com        # esports news

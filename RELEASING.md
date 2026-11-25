@@ -18,7 +18,10 @@ are fine.
 ## Cutting a release
 
 ```
-# 1. Edit policy.yaml / supplemental/ as needed.
+# 1. Edit policy.yaml / supplemental/ as needed, and refresh the snapshot
+#    lists (regulators, UT1). A source that fails keeps its old file and
+#    the script exits non-zero: run it again before building.
+python3 scripts/fetch_external_lists.py
 # 2. Build the bundle and sign it.
 python3 scripts/build_bundle.py 2026.06.01
 

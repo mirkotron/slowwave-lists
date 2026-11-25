@@ -9,6 +9,13 @@ monthly cadence. The bundle holds:
   public blocklists don't cover well — AI companion apps, the Aussie 10
   social list, location/stalkerware, the DoH/VPN bypass set, SafeSearch
   CNAME rewrites.
+- **Snapshots of official and academic lists** (also in `supplemental/`,
+  since 2026.11.17) that are not plain text a device can fetch, or need
+  cleaning first: the gambling regulators' lists of unlicensed sites
+  (Poland, Belgium) and the UT1 lists of Université Toulouse Capitole for
+  dating, drugs, and hate, violence and weapons. `scripts/fetch_external_lists.py`
+  refreshes them; `scripts/external_exclusions.txt` holds what is always
+  left out, with the reason for each.
 - **Preset definitions** (`presets/<tier>.json`) — six age-tier
   starting points that map categories to actions on a friction-first
   spectrum (pass / throttle / hard_throttle / block).
@@ -44,6 +51,8 @@ build_blocklist.py     standalone compiler (parents/developers can
 supplemental/          curated text files included in every release
 keys/lists-signing.pub public verification key (PEM, Ed25519)
 scripts/build_bundle.py builder that emits release tarballs
+scripts/fetch_external_lists.py  refreshes the snapshot lists before a release
+scripts/external_exclusions.txt  hosts never taken into a snapshot, and why
 ```
 
 See `RELEASING.md` for how to cut a new release.
